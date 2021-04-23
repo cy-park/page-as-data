@@ -33,7 +33,16 @@ class pageAsDataPlugin extends Plugin
         $pageArray = $page->toArray();
         $children = array();
         foreach ($collection as $item) {
-          $children[] = $item->toArray();
+          $reflection = new \ReflectionClass($item);
+          $property = $reflection->getProperty('slug');
+          $property->setAccessible(true);
+
+          $_item = $item->toArray();
+          $_item['slug'] = $property->getValue($item);
+
+          //var_dump($item); print_r($item);
+
+          $children[] = $_item;
         }
         $pageArray['children'] = $children;
         switch ($format) {
